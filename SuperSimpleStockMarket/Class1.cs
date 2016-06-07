@@ -124,12 +124,10 @@ namespace SuperSimpleStockMarket
         {
             CheckPrice(price);
 
-            double pERatio = 0.0;
+            if (lastDividend == 0.0)
+                throw new Exception("P/E Ratio cannot be calculated for a stock with a zero last dividend");
 
-            if (fixedDividend.HasValue)
-                pERatio = price / fixedDividend.Value;
-            else
-                throw new Exception("Stock does not have a fixed dividend set therefore PE Ratio cannot be calculated.");
+            double pERatio = price / lastDividend;
 
             return pERatio;
         }

@@ -309,6 +309,82 @@ namespace UnitTestProject
                 Assert.Fail("Exception thrown, message was " + msg);//not handled...
             }
         }
+
+        [TestMethod]
+        public void TestCalculatePERatioOK()
+        {
+            string msg = "";
+            string stockSymbol = "GIN";
+            StockType stockType = StockType.Preferred;
+            double parValue = 100.0;
+            double lastDividend = 8.0;
+            double fixedDividend = 0.02;
+            double price = 40.0;
+            double PERatio = -1.0;
+
+            try
+            {
+                Stock stock = new Stock(stockSymbol, stockType, parValue, lastDividend, fixedDividend);
+                PERatio = stock.CalculatePERatio(price);
+
+                //hand calc for P / E Ratio
+                double expectedPERatio = price / lastDividend;
+                Assert.AreEqual(expectedPERatio, PERatio);
+            }
+            catch (Exception e)
+            {
+                msg = e.Message;
+                Assert.Fail("Exception thrown, message was " + msg);//not handled...
+            }
+        }
+
+        [TestMethod]
+        public void TestCalculatePERatioZeroLastDividend()
+        {
+            string msg = "";
+            string stockSymbol = "TEA";
+            StockType stockType = StockType.Common;
+            double parValue = 100.0;
+            double lastDividend = 0.0;
+            double price = 40.0;
+            double PERatio = -1.0;
+
+            try
+            {
+                Stock stock = new Stock(stockSymbol, stockType, parValue, lastDividend);
+                PERatio = stock.CalculatePERatio(price);
+            }
+            catch (Exception e)
+            {
+                msg = e.Message;
+            }
+
+            Assert.AreEqual("P/E Ratio cannot be calculated for a stock with a zero last dividend", msg);
+        }
+
+        [TestMethod]
+        public void TestCalculatePERatioZeroPrice()
+        {
+            string msg = "";
+            string stockSymbol = "POP";
+            StockType stockType = StockType.Common;
+            double parValue = 100.0;
+            double lastDividend = 8.0;
+            double price = 0.0;
+            double PERatio = -1.0;
+
+            try
+            {
+                Stock stock = new Stock(stockSymbol, stockType, parValue, lastDividend);
+                PERatio = stock.CalculatePERatio(price);
+            }
+            catch (Exception e)
+            {
+                msg = e.Message;
+            }
+
+            Assert.AreEqual("Price must not be zero.", msg);
+        }
     }
 
     [TestClass]
